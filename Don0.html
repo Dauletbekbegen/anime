@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+
+const VkAnimePlayer = () => {
+  // Сериялардың мәліметтер базасы (мұны API немесе Django бэкендтен алуға болады)
+  const episodes = [
+    { 
+      id: 1, 
+      title: '1 серия', 
+      // Бірінші серияның сілтемесі
+      src: 'https://vkvideo.ru/video_ext.php?oid=-221135691&id=456239379&hash=' 
+    },
+    { 
+      id: 2, 
+      title: '2 серия', 
+      // Екінші серияның сілтемесі (id және hash өзгеше болады)
+      src: 'https://vkvideo.ru/video_ext.php?oid=-221135691&id=456239380&hash=YOUR_HASH_HERE' 
+    },
+    { 
+      id: 3, 
+      title: '3 серия', 
+      // Үшінші серияның сілтемесі
+      src: 'https://vkvideo.ru/video_ext.php?oid=-221135691&id=456239381&hash=YOUR_HASH_HERE' 
+    }
+  ];
+
+  // Бастапқыда бірінші серияны көрсетеміз
+  const [currentEpisode, setCurrentEpisode] = useState(episodes[0]);
+
+  return (
+    <div className="video-player-section" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      
+      {/* Плеердің өзі */}
+      <div className="iframe-container" style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+        <iframe 
+          src={currentEpisode.src} 
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000' }}
+          frameBorder="0" 
+          allowFullScreen="1" 
+          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          title={`Эпизод: ${currentEpisode.title}`}
+        ></iframe>
+      </div>
+
+      {/* Серияларды таңдау батырмалары */}
+      <div className="episode-selector" style={{ display: 'flex', gap: '10px', marginTop: '15px', flexWrap: 'wrap' }}>
+        {episodes.map((ep) => (
+          <button 
+            key={ep.id} 
+            onClick={() => setCurrentEpisode(ep)}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: currentEpisode.id === ep.id ? '#ff4757' : '#2f3542', // Белсенді серия қызыл түспен
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              transition: '0.3s'
+            }}
+          >
+            {ep.title}
+          </button>
+        ))}
+      </div>
+
+    </div>
+  );
+};
+
+export default VkAnimePlayer;

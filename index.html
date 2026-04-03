@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>W-Anime</title>
+
+	<style>
+		body {
+			margin: 0;
+			font-family: Arial, sans-serif;
+			transition: 0.3s;
+		}
+
+		body.light {
+			background: #f5f5f5;
+			color: #222;
+		}
+
+		body.dark {
+			background: #121212;
+			color: #fff;
+		}
+
+		header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 15px 30px;
+			background: linear-gradient(90deg, #ff512f, #dd2476);
+			color: white;
+		}
+
+		.nav a {
+			margin: 0 10px;
+			text-decoration: none;
+			color: white;
+			font-weight: bold;
+		}
+
+		.search {
+			padding: 8px;
+			border-radius: 8px;
+			border: none;
+			outline: none;
+		}
+
+		.theme-btn {
+			padding: 8px 15px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-left: 10px;
+			background: white;
+		}
+
+		main {
+			padding: 20px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.card {
+			background: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			transition: 0.3s;
+		}
+
+		body.dark .card {
+			background: #1e1e1e;
+		}
+
+		.card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.card h3 {
+			margin: 10px;
+		}
+
+		.card button {
+			margin: 10px;
+			width: calc(100% - 20px);
+			background: #ff512f;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: bold;
+			transition: background 0.3s;
+		}
+
+		.card button:hover {
+			background: #e04022;
+		}
+
+		.card:hover {
+			transform: translateY(-5px);
+		}
+
+		
+		#player-section {
+			display: none;
+			padding: 20px;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+
+		.back-btn {
+			background: #555;
+			color: white;
+			padding: 10px 15px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-bottom: 20px;
+			font-weight: bold;
+		}
+
+		.back-btn:hover {
+			background: #333;
+		}
+
+		.iframe-container {
+			position: relative;
+			padding-bottom: 56.25%;
+			height: 0;
+			border-radius: 10px;
+			overflow: hidden;
+			background: #000;
+		}
+
+		.iframe-container iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.episode-buttons {
+			display: flex;
+			gap: 10px;
+			margin-top: 15px;
+			flex-wrap: wrap;
+		}
+
+		.ep-btn {
+			padding: 8px 15px;
+			background: #2f3542;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: 0.3s;
+			font-weight: bold;
+		}
+
+		.ep-btn:hover {
+			background: #57606f;
+		}
+
+		.ep-btn.active {
+			background: #ff512f;
+		}
+	</style>
+</head>
+
+<body class="light">
+
+<header>
+	<h1>🎌 W-Anime</h1>
+
+	<nav class="nav">
+		<a href="#" onclick="closePlayer()">Каталог</a>
+		<a href="Don1.html">Персонажи</a>
+	</nav>
+
+	<div>
+		<input type="text" id="search" class="search" placeholder="Поиск аниме...">
+		<button onclick="toggleTheme()" id="themeBtn" class="theme-btn">🌙</button>
+	</div>
+</header>
+
+<main>
+	<div id="catalog-section">
+		<h2>Каталог аниме</h2>
+		<div class="grid" id="animeList"></div>
+	</div>
+
+	<div id="player-section">
+		<button class="back-btn" onclick="closePlayer()">⬅ Назад в каталог</button>
+		<h2 id="player-title">Название аниме</h2>
+		
+		<div class="iframe-container">
+			<iframe id="video-iframe" src="" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe>
+		</div>
+
+		<div class="episode-buttons" id="episode-buttons">
+			</div>
+	</div>
+</main>
+
+<script>
+	const anime = [
+		{ 
+			id: 1,
+			title: "Гуррен-Лаганн", 
+			img: "guren.jpg",
+			episodes: [
+				{ title: "1 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241443&hash=" },
+				{ title: "2 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241440&hash=" },
+				{ title: "3 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241515&hash=" },
+				{ title: "4 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241513&hash=" },
+				{ title: "5 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241510&hash=" },
+				{ title: "6 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241508&hash=" },
+				{ title: "7 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241505&hash=" },
+				{ title: "8 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241503&hash=" },
+				{ title: "9 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241500&hash=" },
+				{ title: "10 серия", src: "https://vkvideo.ru/video_ext.php?oid=-25011059&id=159776968&hash=" },
+				{ title: "11 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241495&hash=" },
+				{ title: "12 серия", src: "https://vkvideo.ru/video_ext.php?oid=-221125211&id=456241492&hash=" },
+				{ title: "13 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_13_СЕРИЮ" },
+				{ title: "14 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_14_СЕРИЮ" },
+				{ title: "15 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_15_СЕРИЮ" },
+				{ title: "16 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_16_СЕРИЮ" },
+				{ title: "17 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_17_СЕРИЮ" },
+				{ title: "18 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_18_СЕРИЮ" },
+				{ title: "19 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_19_СЕРИЮ" },
+				{ title: "20 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_20_СЕРИЮ" },
+				{ title: "21 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_21_СЕРИЮ" },
+				{ title: "22 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_22_СЕРИЮ" },
+				{ title: "23 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_23_СЕРИЮ" },
+				{ title: "24 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_24_СЕРИЮ" },
+				{ title: "25 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_25_СЕРИЮ" },
+				{ title: "26 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_26_СЕРИЮ" },
+				{ title: "27 серия", src: "ВСТАВЬ_СЮДА_СИЛКУ_НА_27_СЕРИЮ" }
+			]
+		},
+		{ 
+			id: 2,
+			title: "Ван-Пис", 
+			img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg",
+			episodes: [
+				{ title: "1 серия", src: "https://vkvideo.ru/video_ext.php?oid=-213334163&id=456243811&hash=" },
+				{ title: "2 серия", src: "https://vkvideo.ru/video_ext.php?oid=-40709881&id=162916801&hash=" },
+				{ title: "3 серия", src: "https://vkvideo.ru/video_ext.php?oid=-40709881&id=162916835&hash=" },
+			]
+		},
+		{ 
+			id: 3,
+			title: "Блич", 
+			img: "bleach.jpg",
+			episodes: [
+				{ title: "1 серия", src: "https://vkvideo.ru/video_ext.php?oid=-185087421&id=456239642&hash=" },
+				{ title: "2 серия", src: "https://vkvideo.ru/video_ext.php?oid=-189724571&id=456252305&hash=" },
+				{ title: "3 серия", src: "https://vkvideo.ru/video_ext.php?oid=-130045726&id=456240451&hash=" },
+				{ title: "4 серия", src: "https://vkvideo.ru/video_ext.php?oid=-172253292&id=456247779&hash=" },
+				{ title: "5 серия", src: "https://vkvideo.ru/video_ext.php?oid=-174203870&id=456239201&hash=" },
+				{ title: "6 серия", src: "https://vkvideo.ru/video_ext.php?oid=-174203870&id=456239202&hash=" }
+			]
+		},
+		{ 
+			id: 4,
+			title: "Тетрадь смерти", 
+			img: "death.jpg",
+			episodes: [
+				{ title: "1 серия", src: "https://vkvideo.ru/video_ext.php?oid=-185087421&id=456239642&hash=" }
+			]
+		},
+		{ 
+			id: 5,
+			title: "Боец Баки", 
+			img: "baki.jpeg",
+			episodes: [
+				{ title: "1 серия", src: "https://vkvideo.ru/video_ext.php?oid=-185087421&id=456239642&hash=" }
+			]
+		},
+		{ 
+			id: 6,
+			title: "Сага о Винланде", 
+			img: "saga.jpg",
+			link: "https://v3.animelib.org/ru/anime/19114--vinland-saga-season-2-anime/watch?episode=106281"
+		},
+		{ 
+			id: 7,
+			title: "Скоро",
+			img: "to-be.png" 
+		}
+	];
+
+	const list = document.getElementById('animeList');
+	const search = document.getElementById('search');
+	const themeBtn = document.getElementById('themeBtn');
+
+	function render(data) {
+		list.innerHTML = "";
+		data.forEach(a => {
+			list.innerHTML += `
+				<div class="card">
+					<img src="${a.img}" alt="${a.title}">
+					<h3>${a.title}</h3>
+					<button onclick="openPlayer(${a.id})">Смотреть</button>
+				</div>
+			`;
+		});
+	}
+
+	search.addEventListener("input", () => {
+		const value = search.value.toLowerCase();
+		const filtered = anime.filter(a => a.title.toLowerCase().includes(value));
+		render(filtered);
+	});
+
+	function toggleTheme() {
+		document.body.classList.toggle('dark');
+		if (document.body.classList.contains('dark')) {
+			themeBtn.textContent = '☀️';
+		} else {
+			themeBtn.textContent = '🌙';
+		}
+	}
+
+	function openPlayer(id) {
+		const selectedAnime = anime.find(a => a.id === id);
+
+		if (selectedAnime && selectedAnime.episodes) {
+			document.getElementById('catalog-section').style.display = 'none';
+			document.getElementById('player-section').style.display = 'block';
+			document.getElementById('player-title').innerText = selectedAnime.title;
+			
+		
+			loadEpisode(selectedAnime.episodes[0].src, 0, selectedAnime.episodes);
+		} 
+		
+		else if (selectedAnime && selectedAnime.link) {
+			window.open(selectedAnime.link, '_blank');
+		} else {
+			alert("Видео әлі қосылмаған!");
+		}
+	}
+
+	
+	function loadEpisode(src, activeIndex, episodes) {
+		const iframe = document.getElementById('video-iframe');
+		const btnContainer = document.getElementById('episode-buttons');
+		
+		iframe.src = src; 
+		btnContainer.innerHTML = ''; 
+
+		
+		episodes.forEach((ep, index) => {
+			const btn = document.createElement('button');
+			btn.innerText = ep.title;
+			btn.className = index === activeIndex ? 'ep-btn active' : 'ep-btn';
+			btn.onclick = () => loadEpisode(ep.src, index, episodes);
+			btnContainer.appendChild(btn);
+		});
+	}
+
+	
+	function closePlayer() {
+		document.getElementById('video-iframe').src = ''; 
+		document.getElementById('catalog-section').style.display = 'block';
+		document.getElementById('player-section').style.display = 'none';
+	}
+
+	
+	render(anime);
+
+</script>
+
+</body>
+</html>

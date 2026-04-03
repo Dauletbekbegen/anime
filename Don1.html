@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>W-Anime</title>
+
+	<style>
+		body {
+			margin: 0;
+			font-family: Arial, sans-serif;
+			transition: 0.3s;
+		}
+
+		body.light {
+			background: #f5f5f5;
+			color: #222;
+		}
+
+		body.dark {
+			background: #121212;
+			color: #fff;
+		}
+
+		header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 15px 30px;
+			background: linear-gradient(90deg, #ff512f, #dd2476);
+			color: white;
+		}
+
+		.nav a {
+			margin: 0 10px;
+			text-decoration: none;
+			color: white;
+			font-weight: bold;
+		}
+
+		.search {
+			padding: 8px;
+			border-radius: 8px;
+			border: none;
+			outline: none;
+		}
+
+		.theme-btn {
+			padding: 8px 15px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-left: 10px;
+			background: white;
+		}
+
+		main {
+			padding: 20px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.card {
+			background: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			transition: 0.3s;
+		}
+
+		body.dark .card {
+			background: #1e1e1e;
+		}
+
+		.card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.card h3 {
+			margin: 10px;
+		}
+
+		
+		.card button {
+			margin: 10px;
+			width: calc(100% - 20px);
+			background: #ff512f;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: bold;
+			transition: background 0.3s;
+		}
+
+		.card button:hover {
+			background: #e04022;
+		}
+
+		.card:hover {
+			transform: translateY(-5px);
+		}
+	</style>
+</head>
+
+<body class="light">
+
+<header>
+	<h1>🎌 W-Anime</h1>
+
+	<nav class="nav">
+		<a href="Don.html">Каталог</a>
+		<a href="Don1.html">Персонажи</a>
+	</nav>
+
+	<div>
+		<input type="text" id="search" class="search" placeholder="Поиск Персонажей...">
+		<button onclick="toggleTheme()" id="themeBtn" class="theme-btn">🌙</button>
+	</div>
+</header>
+
+<main>
+	<h2>Каталог Персонажей</h2>
+
+	<div class="grid" id="animeList"></div>
+</main>
+
+<script>
+	const anime = [
+		{ 
+			title: "Гуррен-Лаганн", 
+			img: "guren.jpg",
+			link: "file:///C:/Users/user/Desktop/Don1y/Don2.html"
+		},
+		{ 
+			title: "Ван-Пис", 
+			img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg",
+			link: "file:///C:/Users/user/Desktop/Don1y/Don3.html"
+		},
+		{ 
+			title: "Блич", 
+			img: "bleach.jpg",
+			link: "https://v3.animelib.org/ru/anime/246--bleach-anime/watch?episode=8305"
+		},
+		{ 
+			title: "Тетрадь смерти", 
+			img: "death.jpg",
+			link: "https://v3.animelib.org/ru/anime/2724--death-note-rewrite-anime/watch?episode=37187"
+		},
+		{ 
+			title: "Боец Баки", 
+			img: "baki.jpeg",
+			link: "https://v3.animelib.org/ru/anime/264--grappler-baki-tv-anime/watch?episode=8990"
+		},
+		{ 
+			title: "Сага о Винланде", 
+			img: "saga.jpg",
+			link: "https://v3.animelib.org/ru/anime/19114--vinland-saga-season-2-anime/watch?episode=106281"
+		},
+		{ 
+			title: "Скоро",
+			img:"to-be.png" 
+		}
+	];
+
+	const list = document.getElementById('animeList');
+	const search = document.getElementById('search');
+	const themeBtn = document.getElementById('themeBtn');
+
+	function render(data) {
+		list.innerHTML = "";
+		data.forEach(a => {
+			list.innerHTML += `
+				<div class="card">
+					<img src="${a.img}" alt="${a.title}">
+					<h3>${a.title}</h3>
+					<button onclick="window.open('${a.link}', '_blank')">Смотреть</button>
+				</div>
+			`;
+		});
+	}
+
+	search.addEventListener("input", () => {
+		const value = search.value.toLowerCase();
+		const filtered = anime.filter(a => a.title.toLowerCase().includes(value));
+		render(filtered);
+	});
+
+	function toggleTheme() {
+		document.body.classList.toggle('dark');
+		if (document.body.classList.contains('dark')) {
+			themeBtn.textContent = '☀️';
+		} else {
+			themeBtn.textContent = '🌙';
+		}
+	}
+
+	render(anime);
+</script>
+
+</body>
+</html>
